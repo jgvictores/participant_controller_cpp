@@ -1,43 +1,31 @@
-#!/usr/bin/env python3
+// Basic participant controller.
 
-from controller import Robot, Lidar
+#include <webots/Robot.hpp>
+#include <webots/Device.hpp>
+#include <webots/Motor.hpp>
 
-# Initialize the robot
-robot = Robot()
-timestep = int(robot.getBasicTimeStep())
+#include <iostream>
 
-# Initialize motors
-motor_left = robot.getDevice('wheel_left_joint')
-motor_right = robot.getDevice('wheel_right_joint')
-lidar = robot.getDevice('Hokuyo URG-04LX-UG01')
-position = robot.getDevice('gps')
+int main(int argc, char **argv)
+{
+    // Initialize the robot
+    webots::Robot *robot = new webots::Robot();
+    timestep = int(robot.getBasicTimeStep())
 
-poi_list = []
-poi_string_list = robot.getCustomData().split()
+    // Initialize motors
+    webots::Motor* motor_left = robot->getMotor('wheel_left_joint');
+    webots::Motor* motor_right = robot->getMotor('wheel_right_joint');
+    webots::Motor* lidar = robot->getDevice('Hokuyo URG-04LX-UG01');
+    webots::Motor* position = robot->getDevice('gps');
 
-for i in range(10):
-    poi_element = [float(poi_string_list[2*i]), float(poi_string_list[2*i+1])]
-    poi_list.append(poi_element)
+    // Main loop:
+    // - perform simulation steps until Webots is stopping the controller
+    while (robot->step(timeStep) != -1)
+    {
+        motor_left->setPosition(45.0*3.14/180.0);
+    };
 
-position.enable(timestep)
-lidar.enable(timestep)
-lidar_size = lidar.getHorizontalResolution()
-lidar_max_range = lidar.getMaxRange()
-
-motor_left.setPosition(float('inf'))
-motor_right.setPosition(float('inf'))
-motor_left.setVelocity(0)
-motor_right.setVelocity(0)
-
-while robot.step(timestep) != -1:
-    lidar_image = lidar.getRangeImage()
-
-    if lidar_image[lidar_size//2] > lidar_max_range/10:
-        motor_left.setVelocity(5)
-        motor_right.setVelocity(5)
-    elif poi_list[9][0] > position.getValues()[0]:
-        motor_left.setVelocity(0)
-        motor_right.setVelocity(0)
-    else:
-        motor_left.setVelocity(-2)
-        motor_right.setVelocity(2)
+    // Exit cleanup code here.
+    delete robot;
+    return 0;
+}
