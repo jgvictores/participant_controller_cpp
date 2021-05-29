@@ -10,7 +10,7 @@ int main(int argc, char **argv)
 {
     // Initialize the robot
     webots::Robot *robot = new webots::Robot();
-    timestep = int(robot.getBasicTimeStep())
+    timestep = int(robot.getBasicTimeStep());
 
     // Initialize motors
     webots::Motor* motor_left = robot->getMotor('wheel_left_joint');
@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     while (robot->step(timeStep) != -1)
     {
         motor_left->setPosition(45.0*3.14/180.0);
-    };
+    }
 
     // Exit cleanup code here.
     delete robot;
