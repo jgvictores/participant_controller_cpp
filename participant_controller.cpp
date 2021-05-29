@@ -6,8 +6,8 @@
 #include <webots/Lidar.hpp>
 #include <webots/GPS.hpp>
 
-
 #include <iostream>
+#include <limits>
 
 int main(int argc, char **argv)
 {
@@ -21,11 +21,13 @@ int main(int argc, char **argv)
     webots::Lidar* lidar = robot->getLidar("Hokuyo URG-04LX-UG01");
     webots::GPS* position = robot->getGPS("gps");
 
+    motor_left->setPosition(std::numeric_limits<double>::infinity());
+    motor_right->setPosition(std::numeric_limits<double>::infinity());
+
     // Main loop:
     // - perform simulation steps until Webots is stopping the controller
     while (robot->step(timestep) != -1)
     {
-        motor_left->setPosition(45.0*3.14/180.0);
     }
 
     // Exit cleanup code here.
